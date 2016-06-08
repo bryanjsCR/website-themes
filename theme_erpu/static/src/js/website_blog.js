@@ -1,4 +1,4 @@
-odoo.define('theme_erpu.website_blog_inh', function(require) {
+odoo.define('theme_erpu.website_blog_inh_erpu', function(require) {
     "use strict";
 
     var blog = require('website_blog.website_blog');

@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Add teme to the list -->
+        <template
+            id="erpu_theme_customize"
+            inherit_id="theme_bootswatch.theme_customize"
+            name="theme_customize Bootswatch for ERP Ukraine">
+            <xpath expr="//div[@class='modal-body']/table" position="inside">
+                <tr>
+                  <td>
+                    <label>
+                      <img
+                          style="width: 120px; height: 70px;"
+                          src="/theme_erpu/static/src/less/erpu/thumbnail.png"
+                          alt="ERPU Theme"/>
+                      <input
+                          name="theme"
+                          type="radio"
+                          data-xmlid="theme_erpu.theme_erpu" data-disable="ee"/>
+                    </label>
+                  </td>
+                </tr>
+            </xpath>
+        </template>
+        <!-- add asssets -->
+        <template
+            id="theme_erpu.theme_erpu"
+            name="ERP Ukraine"
+            inherit_id="website.assets_frontend"
+            active="False"
+            customize_show="False">
+        <xpath expr="." position="inside">
+            <link
+                rel="stylesheet"
+                type="text/less"
+                href='/theme_erpu/static/src/less/erpu/bootswatch.less'
+                t-ignore="true"/>
+            <link
+                rel="stylesheet"
+                type="text/less"
+                href='/theme_erpu/static/src/less/erpu/variables.less'
+                t-ignore="true"/>
+            <link
+                rel='stylesheet'
+                href='/theme_erpu/static/src/less/erpu/fix.css'
+                t-ignore="true"/>
+            <script
+                type="text/javascript"
+                src="/theme_erpu/static/src/js/website_blog.js"/>
+        </xpath>
+    </template>
 
         <!-- hide created with odoo link -->
         <template
@@ -26,19 +75,179 @@
             </xpath>
         </template>
 
-        <!-- fix blog footer -->
+        <!-- hide author in blog posts list -->
         <template
-            id="blog_fix_erpu"
-            name="blog_fix_erpu"
-            inherit_id="website.assets_frontend"
-            active="False"
-            customize_show="False">
-            <xpath expr="." position="inside">
-                <script
-                    type="text/javascript"
-                    src="/theme_erpu/static/src/js/website_blog.js"/>
+            id="erpu_blog_short_hide_author"
+            inherit_id="website_blog.blog_post_short"
+            name="Hide author on blog">
+            <xpath expr="//div[@t-foreach='blog_posts']" position="replace">
+                <div t-foreach="blog_posts" t-as="blog_post" class="mb32">
+                    <t t-if="blog_post.blog_id.show_author">
+                    <t t-if="blog_post.author_avatar">
+                        <span t-if="blog_post.blog_id.show_author" t-field="blog_post.author_avatar" class="o_not_editable" t-field-options='{"widget": "image", "class": "img-circle pull-right mt16 media-object"}' />
+                    </t>
+                    </t>
+                    <a t-attf-href="/blog/#{ slug(blog_post.blog_id) }/post/#{ slug(blog_post) }">
+                        <h2 t-field="blog_post.name" class="mb4"><t t-if="not blog_post.name">Untitled Post</t></h2>
+                    </a>
+                    <div class="text-muted">
+                            <h4 t-field="blog_post.subtitle" class="mb4 mt4"></h4>
+                        <div name='blog_post_data' class='mb0'>
+                            <t t-if="blog_post.blog_id.show_author">
+                            <span t-field="blog_post.author_id" style="display: inline-block;" t-field-options='{
+                                "widget": "contact",
+                                "fields": ["name"]
+                            }'/> &#8212;
+                            </t>
+                            <span t-field="blog_post.create_date" t-field-options='{"format": "dd MMMM yyyy"}'/>
+                            <span t-if="len(blog_post.message_ids) &gt; 0">
+                                &#8212; <t t-esc="len(blog_post.message_ids)"/>
+                                <t t-if="len(blog_post.message_ids) &lt;= 1" >comment</t>
+                                <t t-if="len(blog_post.message_ids) > 1">comments</t>
+                            </span>
+                            <span t-if="blog_post.visits &gt; 0">
+                                &#8212; <t t-esc="blog_post.visits"/>
+                                <t t-if="blog_post.visits &lt;= 1" >view</t>
+                                <t t-if="blog_post.visits > 1">views</t>
+                            </span>
+
+                            <span t-if="not blog_post.website_published" class="label label-danger">not published</span>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </template>
+        <template
+            id="erpu_blog_complete_hide_author"
+            inherit_id="website_blog.blog_post_complete"
+            name="Hide author on blog">
+            <xpath expr="(//div[@class='blog_title'])[1]" position="replace">
+                <t t-set="head">
+                    <t>
+                        <!-- <meta property="fb:app_id" content="792123857559330" /> -->
+                        <meta property="og:title" t-att-content="blog_post.name" />
+                        <meta property="og:description" t-att-content="blog_post.subtitle" />
+                        <meta property="og:type" content="article" />
+                        <meta property="og:url" t-att-content="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
+                        <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+                        <meta name="twitter:card" content="summary_large_image" />
+                        <!-- <meta name="twitter:site" content="@ERP_Ukraine" /> -->
+                        <meta name="twitter:title" t-att-content="blog_post.name" />
+                        <meta name="twitter:description" t-att-content="blog_post.subtitle" />
+                        <meta name="twitter:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+
+                        <!-- Load Facebook SDK for JavaScript -->
+                        <!-- <div id="fb-root"></div>
+                        <script>
+                          window.fbAsyncInit = function() {
+                            FB.init({
+                              appId      : '792123857559330',
+                              xfbml      : true,
+                              version    : 'v2.5'
+                            });
+                          };
+
+                          (function(d, s, id){
+                             var js, fjs = d.getElementsByTagName(s)[0];
+                             if (d.getElementById(id)) {return;}
+                             js = d.createElement(s); js.id = id;
+                             js.src = "//connect.facebook.net/uk_UA/sdk.js";
+                             fjs.parentNode.insertBefore(js, fjs);
+                           }(document, 'script', 'facebook-jssdk'));
+                        </script> -->
+
+                        <!-- g+ sdk -->
+                        <!-- <script src="https://apis.google.com/js/platform.js">
+                        {lang: 'uk'}
+                        </script> -->
+
+                        <!-- twitter sdk -->
+                        <!-- <script>!function(d,s,id){
+                            var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+                            if(!d.getElementById(id)){
+                            js=d.createElement(s);
+                            js.id=id;
+                            js.src=p+'://platform.twitter.com/widgets.js';
+                            fjs.parentNode.insertBefore(js,fjs);
+                            }
+                            }
+                            (document, 'script', 'twitter-wjs');
+                        </script> -->
+
+                        <!-- vk sdk -->
+                        <!-- <script type="text/javascript"
+                            src="http://vk.com/js/api/share.js?90"
+                            charset="windows-1251">
+                        </script> -->
+                    </t>
+                </t>
+                <div class="blog_title">
+                <h1 t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id" placeholder="Blog Post Title"/>
+                <h2 t-field="blog_post.subtitle" placeholder="Subtitle"/>
+                <p class="post-meta text-muted text-center" name="blog_post_data"/>
+                <t t-if="blog_post.blog_id.show_author">
+                <div>
+                    <t t-if="blog_post.author_avatar">
+                        <span t-field="blog_post.author_avatar" class="o_not_editable" t-field-options='{"widget": "image", "class": "img-circle", "style":"width: 30px; margin-right: 10px; display:inline"}' />
+                    </t>
+                    <span t-field="blog_post.author_id" style="display: inline-block;" t-field-options='{
+                        "widget": "contact",
+                        "fields": ["name"]
+                    }'/>
+                </div>
+                </t>
+                <div t-if="blog_post_cover_properties.get('resize_class') == 'cover cover_full'" id="blog_angle_down">
+                    <strong><a href="#blog_content" class="fa fa-angle-down fa-3x fa-inverse mt4"/></strong>
+                </div>
+            </div>
+            </xpath>
+            <xpath expr="(//div[@class='blog_title'])[2]" position="replace">
+                <div class="blog_title">
+                <a class="hidden js_next" t-attf-href="/blog/#{ slug(next_post.blog_id) }/post/#{ slug(next_post) }/#wrap"/>
+                <h1 t-field="next_post.name" placeholder="Blog Post Title"/>
+                <h2 t-field="next_post.subtitle" placeholder="Subtitle"/>
+                <t t-if="blog_post.blog_id.show_author">
+                <div>
+                    <t t-if="next_post.author_avatar">
+                        <span t-field="next_post.author_avatar" t-field-options='{"widget": "image", "class": "img-circle", "style":"width: 30px; margin-right: 10px; display:inline"}' />
+                    </t>
+                    <span t-field="next_post.author_id" style="display: inline-block;" t-field-options='{
+                            "widget": "contact",
+                            "fields": ["name"]
+                        }'/>
+                </div>
+                </t>
+                <p class="mt32">Читати далі <span class="fa fa-long-arrow-right"/></p>
+            </div>
+            </xpath>
+        </template>
+
+        <record id="erpu_blog_view_form" model="ir.ui.view">
+           <field name="name">erpu.blog.form.inherit</field>
+           <field name="model">blog.blog</field>
+           <field name="inherit_id" ref="website_blog.view_blog_blog_form"/>
+           <field name="arch" type="xml">
+           <data>
+                <xpath expr="//field[@name='name']" position="after">
+                   <field name="show_author"/>
+                   <field name="subtitle"/>
+                </xpath>
+           </data>
+           </field>
+       </record>
+       <record id="erpu_blogp_view_form" model="ir.ui.view">
+           <field name="name">erpu.blogp.form.inherit</field>
+           <field name="model">blog.post</field>
+           <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
+           <field name="arch" type="xml">
+           <data>
+                <xpath expr="//field[@name='blog_id']" position="after">
+                   <field name="author_id"/>
+                   <field name="author_avatar"/>
+                </xpath>
+           </data>
+           </field>
+       </record>
 
     </data>
 </odoo>
