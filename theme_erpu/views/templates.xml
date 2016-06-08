@@ -124,7 +124,7 @@
             <xpath expr="(//div[@class='blog_title'])[1]" position="replace">
                 <t t-set="head">
                     <t>
-                        <!-- <meta property="fb:app_id" content="792123857559330" /> -->
+                        <meta property="fb:app_id" content="1740496676193628" />
                         <meta property="og:title" t-att-content="blog_post.name" />
                         <meta property="og:description" t-att-content="blog_post.subtitle" />
                         <meta property="og:type" content="article" />
@@ -137,11 +137,11 @@
                         <meta name="twitter:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
 
                         <!-- Load Facebook SDK for JavaScript -->
-                        <!-- <div id="fb-root"></div>
+                        <div id="fb-root"></div>
                         <script>
                           window.fbAsyncInit = function() {
                             FB.init({
-                              appId      : '792123857559330',
+                              appId      : '1740496676193628',
                               xfbml      : true,
                               version    : 'v2.5'
                             });
@@ -154,15 +154,15 @@
                              js.src = "//connect.facebook.net/uk_UA/sdk.js";
                              fjs.parentNode.insertBefore(js, fjs);
                            }(document, 'script', 'facebook-jssdk'));
-                        </script> -->
+                        </script>
 
                         <!-- g+ sdk -->
-                        <!-- <script src="https://apis.google.com/js/platform.js">
+                        <script src="https://apis.google.com/js/platform.js">
                         {lang: 'uk'}
-                        </script> -->
+                        </script>
 
                         <!-- twitter sdk -->
-                        <!-- <script>!function(d,s,id){
+                        <script>!function(d,s,id){
                             var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
                             if(!d.getElementById(id)){
                             js=d.createElement(s);
@@ -172,13 +172,13 @@
                             }
                             }
                             (document, 'script', 'twitter-wjs');
-                        </script> -->
+                        </script>
 
                         <!-- vk sdk -->
-                        <!-- <script type="text/javascript"
+                        <script type="text/javascript"
                             src="http://vk.com/js/api/share.js?90"
                             charset="windows-1251">
-                        </script> -->
+                        </script>
                     </t>
                 </t>
                 <div class="blog_title">
@@ -221,6 +221,62 @@
             </div>
             </xpath>
         </template>
+        <!-- custom share buttons after blog post -->
+        <template
+            id="erpu_blog_post_share"
+            name="Enable blog post share"
+            inherit_id="website_blog.blog_post_complete"
+            active="False"
+            customize_show="True">
+            <xpath expr="//div[@id='blog_content']" position="after">
+                <div class="container">
+                    <div class="row" t-if="blog_post.website_published">
+                        <div class="read_width">
+                            <div class="col-xs-auto">
+                                <!-- Your like button code -->
+                                <div class="fb-like"
+                                    t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                    data-layout="button_count"
+                                    data-action="like"
+                                    data-show-faces="true"
+                                    data-share="true"></div>
+                            </div>
+                            <div class="col-xs-auto">
+                                <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
+                                <div
+                                    class="g-plus"
+                                    data-action="share"
+                                    data-annotation="bubble"
+                                    t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
+                                </div>
+                            </div>
+                            <div class="col-xs-auto">
+                                <a href="https://twitter.com/share"
+                                   class="twitter-share-button"
+                                   t-att-data-url="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                   data-hashtags="weche">Tweet</a>
+                            </div>
+                            <div class="col-xs-auto">
+                                <script type="text/javascript">
+                                document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- fb comments -->
+                    <!-- <div class="row">
+                        <section id="comments" class="read_width">
+                            <hr/>
+                            <div class="fb-comments"
+                                t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                data-numposts="5">
+                            </div>
+                        </section>
+                    </div> -->
+                </div>
+            </xpath>
+        </template>
+
 
         <record id="erpu_blog_view_form" model="ir.ui.view">
            <field name="name">erpu.blog.form.inherit</field>
