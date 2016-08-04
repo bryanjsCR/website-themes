@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="fb_view_website_form" model="ir.ui.view">
+            <field name="name">website.form.inherit.fb</field>
+            <field name="model">website</field>
+            <field name="inherit_id" ref="website.view_website_form"/>
+            <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='social_facebook']" position="after">
+                    <field name="fb_pages_id" placeholder="436601306535337"/>
+                    <field name="fb_app_id" placeholder="792123857559330"/>
+                </xpath>
+            </data>
+            </field>
+        </record>
+
+        <record id="fb_view_website_config_form" model="ir.ui.view">
+            <field name="name">website.config.form.inherit.fb</field>
+            <field name="model">website.config.settings</field>
+            <field name="inherit_id" ref="website.view_website_config_settings"/>
+            <field name="arch" type="xml">
+            <data>
+                <xpath expr="//div[@name='social_facebook']" position="after">
+                    <label for="fb_pages_id"/>
+                            <div name="fb_pages_id">
+                                <div class="oe_inline">
+                                    <field name="fb_pages_id" placeholder="436601306535337"/>
+                                </div>
+                            </div>
+                    <label for="fb_app_id"/>
+                            <div name="fb_app_id">
+                                <div class="oe_inline">
+                                    <field name="fb_app_id" placeholder="792123857559330"/>
+                                </div>
+                            </div>
+                </xpath>
+            </data>
+            </field>
+        </record>
+
+    </data>
+</odoo>
