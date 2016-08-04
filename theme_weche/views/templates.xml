@@ -144,12 +144,6 @@
                             }
                             (document, 'script', 'twitter-wjs');
                         </script>
-
-                        <!-- vk sdk -->
-                        <script type="text/javascript"
-                            src="http://vk.com/js/api/share.js?90"
-                            charset="windows-1251">
-                        </script>
                     </t>
                 </t>
                 <div class="blog_title">
@@ -227,23 +221,18 @@
                                    t-att-data-url="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
                                    data-hashtags="weche">Tweet</a>
                             </div>
-                            <div class="col-xs-auto">
-                                <script type="text/javascript">
-                                document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
-                                </script>
-                            </div>
                         </div>
                     </div>
                     <!-- fb comments -->
-                    <!-- <div class="row">
+                    <div class="row">
                         <section id="comments" class="read_width">
                             <hr/>
                             <div class="fb-comments"
                                 t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                                data-numposts="5">
+                                data-numposts="5" data-width="100%">
                             </div>
                         </section>
-                    </div> -->
+                    </div>
                 </div>
             </xpath>
         </template>
@@ -288,6 +277,7 @@
                     rel="shortcut icon"
                     href="/theme_weche/static/src/img/favicon.ico"
                     type="image/x-icon"/>
+                <meta property="fb:pages" content="436601306535337" />
             </xpath>
         </template>
 
