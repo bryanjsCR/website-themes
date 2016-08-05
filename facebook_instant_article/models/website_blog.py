@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from openerp import api, fields, models, _
+# from openerp import api, fields, models, _
+
+from openerp.osv import osv, fields
 
 
-class weche_Blog(models.Model):
-    _inherit = 'blog.blog'
+class FbBlogPost(osv.Model):
+    _inherit = 'blog.post'
 
-    fb_app_id = fields.Char(string='Facebook App ID')
-    fb_user_token = fields.Char(string='User Access Token')
-    fb_app_token = fields.Char(string='App Access Token')
+    def _check_for_publication(self, cr, uid, ids, vals, context=None):
+        super(FbBlogPost, self)._check_for_publication(
+            cr, uid, ids, vals, context)
+        if vals.get('website_published'):
+            print 'published.'
+            user = self.pool['res.users'].browse(cr, uid, uid, context=context)
+            if user and user.fb_long_term_token:
+                print 'fb connected'

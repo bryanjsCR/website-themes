@@ -11,6 +11,7 @@
                 <xpath expr="//field[@name='social_facebook']" position="after">
                     <field name="fb_pages_id" placeholder="436601306535337"/>
                     <field name="fb_app_id" placeholder="792123857559330"/>
+                    <field name="fb_app_secret" placeholder="792123857559330"/>
                 </xpath>
             </data>
             </field>
@@ -33,6 +34,12 @@
                             <div name="fb_app_id">
                                 <div class="oe_inline">
                                     <field name="fb_app_id" placeholder="792123857559330"/>
+                                </div>
+                            </div>
+                    <label for="fb_app_secret"/>
+                            <div name="fb_app_secret">
+                                <div class="oe_inline">
+                                    <field name="fb_app_secret" password="True" placeholder="xxx"/>
                                 </div>
                             </div>
                 </xpath>
