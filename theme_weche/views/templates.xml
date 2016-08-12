@@ -109,7 +109,7 @@
 
                         <!-- Load Facebook SDK for JavaScript -->
                         <div id="fb-root"></div>
-                        <script>
+                        <script t-if="blog_post.website_published">
                           window.fbAsyncInit = function() {
                             FB.init({
                               appId      : '792123857559330',
@@ -224,7 +224,7 @@
                         </div>
                     </div>
                     <!-- fb comments -->
-                    <div class="row">
+                    <div class="row" t-if="blog_post.website_published">
                         <section id="comments" class="read_width">
                             <hr/>
                             <div class="fb-comments"

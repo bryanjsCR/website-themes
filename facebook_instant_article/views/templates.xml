@@ -28,9 +28,67 @@
                             <input type="submit" value="Disconnect" t-attf-class="btn btn-danger"/>
                         </form>
                     </div>
+                    <div t-if="blog_post.website_published">
+                        <form t-att-action="request.httprequest.url_root+'fb_instant_article/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="submit" value="Post Article" t-attf-class="btn btn-success"/>
+                        </form>
+                    </div>
                 </div>
             </xpath>
         </template>
+
+        <template id="blog_post_instant_article" name="Blog Post Instant Article">
+                <html lang="ua" prefix="op: http://media.facebook.com/op#">
+                    <head>
+                        <meta charset="utf-8"/>
+                        <link rel="canonical" t-att-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
+                        <link rel="stylesheet" title="default" href="#" />
+                        <meta property="fb:use_automatic_ad_placement" content="true" />
+                        <title t-field="blog_post.name" />
+                        <meta property="og:title" t-att-content="blog_post.name" />
+                        <meta property="og:description" t-att-content="blog_post.subtitle" />
+                        <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+                    </head>
+                    <body>
+                        <article>
+                            <header>
+                                <!-- The cover image shown inside your article -->
+                                <figure>
+                                    <img t-attf-src="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}"  />
+                                </figure>
+
+                                <!-- A kicker for your article -->
+                                <h3 class="op-kicker" t-field="blog.name" />
+
+                                <!-- The title and subtitle shown in your Instant Article -->
+                                <h1 t-field="blog_post.name" />
+                                <h2 t-field="blog_post.subtitle"/>
+
+                                <!-- The authors of your article -->
+                                <address t-field="blog_post.author_id.name" />
+                                <!-- The date and time when your article was originally published -->
+                                <time class="op-published" t-att-dateTime="blog_post.create_date"></time>
+                                <time class="op-modified" t-att-dateTime="blog_post.write_date"></time>
+                            </header>
+
+                            <!-- Article body goes here -->
+                            <div id="blog_content" t-field="blog_post.fb_content"/>
+
+                            <footer>
+                                <small>&#169; <span t-field="res_company.name" /></small>
+                                <ul class="op-related-articles">
+                                    <li><a t-att-href="request.httprequest.url_root+'blog/'+slug(next_post.blog_id)+'/post/'+slug(next_post)"></a></li>
+                                </ul>
+                            </footer>
+                        </article>
+                    </body>
+                </html>
+
+
+
+        </template>
+
 
     </data>
 </odoo>
