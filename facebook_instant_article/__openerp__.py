@@ -7,11 +7,11 @@
     'author': "ERP Ukraine",
     'website': "https://erp.co.ua",
     'data': [
-        # 'views/assets.xml',
-        # 'views/options.xml',
+        'views/assets.xml',
         'views/templates.xml',
         'views/website_views.xml'
     ],
+    'application': True,
     'depends': ['website', 'website_blog'],
     'images': [
         'static/description/icon.png',

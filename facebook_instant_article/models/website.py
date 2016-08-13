@@ -7,7 +7,7 @@ class FbConfigWebsite(models.Model):
     _inherit = 'website'
 
     fb_pages_id = fields.Char(
-        string='Facebook pages meta',
+        string='Facebook page ID',
         default='')
     fb_app_id = fields.Char(
         string='Facebook App ID',
@@ -15,6 +15,9 @@ class FbConfigWebsite(models.Model):
     fb_app_secret = fields.Char(
         string='Facebook App Secret',
         default='')
+    fb_show_ads = fields.Boolean(
+        string='Show Embed Ads',
+        default=True)
 
 
 class FbConfigWebsiteSettings(models.TransientModel):
@@ -29,6 +32,9 @@ class FbConfigWebsiteSettings(models.TransientModel):
     fb_app_secret = fields.Char(
         related='website_id.fb_app_secret',
         string='Facebook App Secret')
+    fb_show_ads = fields.Boolean(
+        related='website_id.fb_show_ads',
+        string='Show Embed Ads')
 
 
 class FbConfigResUsers(models.Model):

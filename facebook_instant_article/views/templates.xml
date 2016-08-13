@@ -12,12 +12,13 @@
         <template id="fb_pages_post_instant_article" inherit_id="website_blog.blog_post_complete" name="Facebook Instant Article tools">
             <xpath expr="(//div[@class='container blog_publish_btn'])" position="inside">
                 <div groups="base.group_website_publisher" class="pull-left css_editable_mode_hidden">
-                    <div t-if="not user_id.fb_long_term_token">
+                    <div t-if="not user_id.fb_long_term_token and website.fb_app_id">
                         <form action="https://www.facebook.com/dialog/oauth" method="get">
                             <input type="hidden" name="client_id" t-att-value="website.fb_app_id"/>
                             <input type="hidden" name="redirect_uri" t-att-value="request.httprequest.url_root+'fb_instant_article/login_success'"/>
                             <input type="hidden" name="state" t-att-value="request.csrf_token()"/>
-                            <input type="submit" value="Connect Instant Article App" t-attf-class="btn btn-danger"/>
+                            <input type="hidden" name="scope" value="pages_manage_instant_articles,pages_show_list" />
+                            <input type="submit" value="Connect Instant Article App" t-attf-class="btn btn-success"/>
                         </form>
                     </div>
                     <div t-if="user_id.fb_long_term_token">
@@ -28,11 +29,16 @@
                             <input type="submit" value="Disconnect" t-attf-class="btn btn-danger"/>
                         </form>
                     </div>
-                    <div t-if="blog_post.website_published">
+                    <div t-if="blog_post.website_published and user_id.fb_long_term_token and not blog_post.fb_import_status_ok">
                         <form t-att-action="request.httprequest.url_root+'fb_instant_article/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <input type="submit" value="Post Article" t-attf-class="btn btn-success"/>
                         </form>
+                    </div>
+                    <div>
+                        <input type="hidden" name="fb_import_id" t-att-value="blog_post.fb_import_id"/>
+                        <span id="fb_import_ok" hidden="true"  class="fa fa-check">Article is Posted</span>
+                        <span id="fb_import_error" hidden="true"  class="fa fa-cross">Error During Publication</span>
                     </div>
                 </div>
             </xpath>
@@ -44,7 +50,7 @@
                         <meta charset="utf-8"/>
                         <link rel="canonical" t-att-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
                         <link rel="stylesheet" title="default" href="#" />
-                        <meta property="fb:use_automatic_ad_placement" content="true" />
+                        <meta property="fb:use_automatic_ad_placement" t-att-content="website.fb_show_ads" />
                         <title t-field="blog_post.name" />
                         <meta property="og:title" t-att-content="blog_post.name" />
                         <meta property="og:description" t-att-content="blog_post.subtitle" />

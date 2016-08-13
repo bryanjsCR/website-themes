@@ -109,11 +109,11 @@ class FbInstantArticle(http.Controller):
             res.fb_app_id + '/instant_articles'
         r = requests.Session().post(fb_instant_url, params=par)
         if not r.status_code == 200:
-            print r.json()
+            _logger.warning(r.json())
             return False
 
         response = r.json()
-        print 'resp : %s' % response
+        _logger.info('resp : %s' % response)
         return response.get('id', '')
 
     @http.route(
@@ -129,8 +129,9 @@ class FbInstantArticle(http.Controller):
         return http.redirect_with_hash(redirect_uri)
 
     @http.route([
-     '''/fb_instant_article/<model("blog.blog"):blog>''' +
-     '''/post/<model("blog.post", "[('blog_id','=',blog[0])]"):blog_post>''',
+        '''/fb_instant_article/<model("blog.blog"):blog>''' +
+        '''/post/<model("blog.post",''' +
+        ''' "[('blog_id','=',blog[0])]"):blog_post>''',
     ], type='http', auth="user", website=True)
     def fb_post(self,
                 blog,
@@ -193,8 +194,41 @@ class FbInstantArticle(http.Controller):
         response = request.website.render(
             "facebook_instant_article.blog_post_instant_article", values)
         response.flatten()
-        import_id = self._post_article_to_fb(response.data)
+        html_source = '<!doctype html>' + response.data
+        import_id = self._post_article_to_fb(html_source)
         if import_id:
             post_id.fb_import_id = import_id
         url = '/blog/' + str(blog.id) + '/post/' + str(blog_post.id)
         return http.redirect_with_hash(url)
+
+    @http.route(
+        ['/fb_instant_article/check_import'],
+        type='json', auth='user')
+    def check_import(self, fb_import_id):
+        user_id = request.env['res.users'].search(
+            [('id', '=', request.uid)],
+            limit=1)
+        if len(user_id) <= 0:
+            return False
+
+        res = request.env['website'].search(
+            [('id', '=', request.website.id)],
+            limit=1)
+        if len(res) <= 0:
+            return False
+
+        par = {
+            'access_token': user_id.fb_long_term_token,
+            'fields': 'errors,instant_article,status',
+        }
+        fb_instant_url = 'https://graph.facebook.com/' + fb_import_id
+        r = requests.Session().post(fb_instant_url, params=par)
+        if not r.status_code == 200:
+            _logger.warning(r.json())
+            return False
+
+        response = r.json()
+        _logger.info('resp : %s' % response)
+        if response.get('status', '') == 'SUCCESS':
+            _logger.info('import succefully')
+        return response

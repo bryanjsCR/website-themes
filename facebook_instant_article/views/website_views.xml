@@ -12,6 +12,7 @@
                     <field name="fb_pages_id" placeholder="436601306535337"/>
                     <field name="fb_app_id" placeholder="792123857559330"/>
                     <field name="fb_app_secret" placeholder="792123857559330"/>
+                    <field name="fb_show_ads"/>
                 </xpath>
             </data>
             </field>
@@ -40,6 +41,12 @@
                             <div name="fb_app_secret">
                                 <div class="oe_inline">
                                     <field name="fb_app_secret" password="True" placeholder="xxx"/>
+                                </div>
+                            </div>
+                    <label for="fb_show_ads"/>
+                            <div name="fb_show_ads">
+                                <div class="oe_inline">
+                                    <field name="fb_show_ads"/>
                                 </div>
                             </div>
                 </xpath>
