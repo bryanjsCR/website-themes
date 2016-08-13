@@ -106,7 +106,7 @@ class FbInstantArticle(http.Controller):
             'development_mode': True,
         }
         fb_instant_url = 'https://graph.facebook.com/' +\
-            res.fb_app_id + '/instant_articles'
+            res.fb_pages_id + '/instant_articles'
         r = requests.Session().post(fb_instant_url, params=par)
         if not r.status_code == 200:
             _logger.warning(r.json())
@@ -203,7 +203,7 @@ class FbInstantArticle(http.Controller):
 
     @http.route(
         ['/fb_instant_article/check_import'],
-        type='json', auth='user')
+        type='json', auth='user', website=True)
     def check_import(self, fb_import_id):
         user_id = request.env['res.users'].search(
             [('id', '=', request.uid)],
@@ -221,8 +221,9 @@ class FbInstantArticle(http.Controller):
             'access_token': user_id.fb_long_term_token,
             'fields': 'errors,instant_article,status',
         }
+        # 1476960168997006 - fb_import_id lina kostenko
         fb_instant_url = 'https://graph.facebook.com/' + fb_import_id
-        r = requests.Session().post(fb_instant_url, params=par)
+        r = requests.Session().get(fb_instant_url, params=par)
         if not r.status_code == 200:
             _logger.warning(r.json())
             return False
@@ -231,4 +232,16 @@ class FbInstantArticle(http.Controller):
         _logger.info('resp : %s' % response)
         if response.get('status', '') == 'SUCCESS':
             _logger.info('import succefully')
-        return response
+            blog_post_obj = request.registry['blog.post']
+            blog_post_id = blog_post_obj.search(
+                cr, SUPERUSER_ID,
+                [('fb_import_id', '=', fb_import_id)],
+                limit=1, context=context)
+            if not blog_post_id:
+                return False
+            blog_post = blog_post_obj.browse(
+                cr, SUPERUSER_ID, blog_post_id, context=context)
+            blog_post.fb_import_status_ok = True
+            blog_post.fb_article_id = response.get('id', '')
+            return True
+        return False

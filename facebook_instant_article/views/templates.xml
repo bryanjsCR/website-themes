@@ -29,7 +29,7 @@
                             <input type="submit" value="Disconnect" t-attf-class="btn btn-danger"/>
                         </form>
                     </div>
-                    <div t-if="blog_post.website_published and user_id.fb_long_term_token and not blog_post.fb_import_status_ok">
+                    <div t-if="blog_post.website_published and user_id.fb_long_term_token and not blog_post.fb_import_id">
                         <form t-att-action="request.httprequest.url_root+'fb_instant_article/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <input type="submit" value="Post Article" t-attf-class="btn btn-success"/>
