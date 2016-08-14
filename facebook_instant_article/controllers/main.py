@@ -7,6 +7,7 @@ import requests
 from openerp.addons.web.http import request
 from openerp.addons.website.models.website import slug, unslug
 
+from copy import deepcopy
 import pprint
 import lxml.html as LH
 from lxml import etree
@@ -77,12 +78,6 @@ class FbInstantArticle(http.Controller):
 
         return 'error'
 
-    #     curl \
-    # -F 'access_token={access-token}' \
-    # -F 'html_source=<!doctype html>...' \
-    # -F 'published=true' \
-    # -F 'development_mode=false' \
-    # https://graph.facebook.com/{page-id}/instant_articles
     def _post_article_to_fb(self, html_source):
         '''Upload article to facebook.
         returns import id'''
@@ -109,12 +104,74 @@ class FbInstantArticle(http.Controller):
             res.fb_pages_id + '/instant_articles'
         r = requests.Session().post(fb_instant_url, params=par)
         if not r.status_code == 200:
-            _logger.warning(r.json())
+            _logger.warning('unable to post article')
             return False
 
         response = r.json()
-        _logger.info('resp : %s' % response)
         return response.get('id', '')
+
+    def _convert_to_article(self, layout):
+        '''Convert html to instant article format.'''
+        try:
+            root = LH.fromstring(layout)
+        except LH.ParseError as err:
+            _logger.warning('Can not parse article: %s' % format(err))
+            return False
+        # change all h3s to h2
+        for element in root.iter('h3'):
+            element.tag = 'h2'
+        # change all h4s to h2
+        for element in root.iter('h4'):
+            element.tag = 'h2'
+        # wrap each <img> with <figure>
+        for element in root.iter('img'):
+            src = element.attrib.get('src', '')
+            element.tag = 'figure'
+            for key in element.attrib.keys():
+                element.attrib.pop(key)
+            etree.SubElement(element, 'img').set('src', src)
+        # wrap each <iframe> with <figure>
+        for element in root.iter('iframe'):
+            src = element.attrib.get('src', '')
+            if src[0:2] == '//':    # fix url
+                src = 'http:' + src
+            element.tag = 'figure'
+
+            for key in element.attrib.keys():
+                element.attrib.pop(key)
+            element.set('class', 'op-interactive')
+            iframe = etree.SubElement(element, 'iframe')
+            iframe.set('width', '560')
+            iframe.set('height', '315')
+            iframe.set('src', src)
+        # convert image floating in s_text_image_floating
+        # to image with caption
+        for section in root.iter('section'):
+            if section.attrib.get('class', '') != 's_text_image_floating':
+                continue
+            for el in section.iter('div'):
+                if el.attrib.get('class', '') == 'o_footer':
+                    caption = deepcopy(el)
+                    el.getparent().remove(el)
+                    for figure in section.iter('figure'):
+                        figcaption = etree.SubElement(figure, 'figcaption')
+                        figcaption.append(caption)
+        # convert gallery to slideshow
+        for section in root.iter('section'):
+            if 'o_gallery' not in section.attrib.get('class', ''):
+                continue
+            root_figure = etree.SubElement(section, 'figure')
+            root_figure.set('class', 'op-slideshow')
+            for div in section.iter('div'):
+                if div.attrib.get('class') != 'container':
+                    continue
+                for fig in div.iter('figure'):
+                    root_figure.append(deepcopy(fig))
+            for el in section:
+                if el is not root_figure:
+                    el.getparent().remove(el)
+
+        return LH.tostring(root, encoding='utf-8', method='xml')
 
     @http.route(
         ['/fb_instant_article/disconnect'],
@@ -136,7 +193,7 @@ class FbInstantArticle(http.Controller):
     def fb_post(self,
                 blog,
                 blog_post):
-        """ Convert blog post to Facebook Instant Article.
+        """ Publish blog post to Facebook Instant Article.
         """
         cr, uid, context = request.cr, request.uid, request.context
         blog_post_obj = request.registry['blog.post']
@@ -171,25 +228,7 @@ class FbInstantArticle(http.Controller):
             cr, SUPERUSER_ID, blog_post.id, context=context)
 
         layout = '<div>' + post_id.content + '</div>'
-        try:
-            root = LH.fromstring(layout)
-        except LH.ParseError as err:
-            _logger.warning('Can not parse article: %s' % format(err))
-            return False
-        for element in root.iter('h3'):
-            element.tag = 'h2'
-        for element in root.iter('h4'):
-            element.tag = 'h2'
-        for element in root.iter('img'):
-            src = element.attrib.get('src', '')
-            element.tag = 'figure'
-            for key in element.attrib.keys():
-                element.attrib.pop(key)
-            etree.SubElement(element, 'img').set('src', src)
-
-        post_id.fb_content = LH.tostring(root,
-                                         encoding='utf-8',
-                                         method='xml')
+        post_id.fb_content = self._convert_to_article(layout)
 
         response = request.website.render(
             "facebook_instant_article.blog_post_instant_article", values)
@@ -205,6 +244,7 @@ class FbInstantArticle(http.Controller):
         ['/fb_instant_article/check_import'],
         type='json', auth='user', website=True)
     def check_import(self, fb_import_id):
+        cr, uid, context = request.cr, request.uid, request.context
         user_id = request.env['res.users'].search(
             [('id', '=', request.uid)],
             limit=1)
@@ -221,15 +261,12 @@ class FbInstantArticle(http.Controller):
             'access_token': user_id.fb_long_term_token,
             'fields': 'errors,instant_article,status',
         }
-        # 1476960168997006 - fb_import_id lina kostenko
         fb_instant_url = 'https://graph.facebook.com/' + fb_import_id
         r = requests.Session().get(fb_instant_url, params=par)
         if not r.status_code == 200:
-            _logger.warning(r.json())
             return False
 
         response = r.json()
-        _logger.info('resp : %s' % response)
         if response.get('status', '') == 'SUCCESS':
             _logger.info('import succefully')
             blog_post_obj = request.registry['blog.post']

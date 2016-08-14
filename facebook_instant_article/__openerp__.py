@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Facebook Instant Article',
-    'description': 'Publish blog posts to Facebook as Instant Articles',
+    'description': 'Publish Blog Posts to Facebook as Instant Articles',
     'category': 'Website',
     'version': '1.1',
     'author': "ERP Ukraine",

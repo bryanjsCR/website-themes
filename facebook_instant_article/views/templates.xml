@@ -22,23 +22,22 @@
                         </form>
                     </div>
                     <div t-if="user_id.fb_long_term_token">
-                        <span class="fa fa-check"> Facebook Instant Article Connected</span>
-                        <form action="/fb_instant_article/disconnect" method="get">
+                        <span class="fa fa-check"> Instant Article Connected</span>
+                        <!-- <form action="/fb_instant_article/disconnect" method="get">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <input type="hidden" name="redirect_uri" t-att-value="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"/>
-                            <input type="submit" value="Disconnect" t-attf-class="btn btn-danger"/>
-                        </form>
+                            <input type="submit" value="Disconnect" t-attf-class="btn btn-danger fa fa-check"/>
+                        </form> -->
                     </div>
                     <div t-if="blog_post.website_published and user_id.fb_long_term_token and not blog_post.fb_import_id">
                         <form t-att-action="request.httprequest.url_root+'fb_instant_article/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="submit" value="Post Article" t-attf-class="btn btn-success"/>
+                            <input type="submit" value="Publish Instant Article" t-attf-class="btn btn-success"/>
                         </form>
                     </div>
                     <div>
                         <input type="hidden" name="fb_import_id" t-att-value="blog_post.fb_import_id"/>
                         <span id="fb_import_ok" hidden="true"  class="fa fa-check">Article is Posted</span>
-                        <span id="fb_import_error" hidden="true"  class="fa fa-cross">Error During Publication</span>
                     </div>
                 </div>
             </xpath>
