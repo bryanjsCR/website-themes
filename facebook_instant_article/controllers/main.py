@@ -98,7 +98,7 @@ class FbInstantArticle(http.Controller):
             'access_token': user_id.fb_long_term_token,
             'html_source': html_source,
             'published': False,
-            'development_mode': True,
+            'development_mode': False,
         }
         fb_instant_url = 'https://graph.facebook.com/' +\
             res.fb_pages_id + '/instant_articles'
