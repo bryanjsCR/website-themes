@@ -170,6 +170,12 @@ class FbInstantArticle(http.Controller):
             for el in section:
                 if el is not root_figure:
                     el.getparent().remove(el)
+        # convert fb to
+        # <figure class="op-social">
+	    #    <iframe>
+        #    <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D1746588085592631%26id%3D100007243681247&width=500" width="auto" height="695" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+	    #       </iframe>
+        # </figure>
 
         return LH.tostring(root, encoding='utf-8', method='xml')
 
