@@ -17,4 +17,5 @@ class FbBlogPost(osv.Model):
         'fb_import_status_ok': fields.boolean('FB Import Status',
                                               default=False),
         'fb_article_id': fields.char('FB Article ID'),
+        'fb_publisher_token': fields.char('FB Publisher Token'),
     }

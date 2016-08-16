@@ -108,7 +108,7 @@ class FbInstantArticle(http.Controller):
             return False
 
         response = r.json()
-        return response.get('id', '')
+        return response.get('id', ''), user_id.fb_long_term_token
 
     def _convert_to_article(self, layout):
         '''Convert html to instant article format.'''
@@ -172,9 +172,9 @@ class FbInstantArticle(http.Controller):
                     el.getparent().remove(el)
         # convert fb to
         # <figure class="op-social">
-	    #    <iframe>
+        #    <iframe>
         #    <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D1746588085592631%26id%3D100007243681247&width=500" width="auto" height="695" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-	    #       </iframe>
+        #       </iframe>
         # </figure>
 
         return LH.tostring(root, encoding='utf-8', method='xml')
@@ -241,9 +241,11 @@ class FbInstantArticle(http.Controller):
         response.flatten()
         html_source = '<!doctype html>' + response.data
         print html_source
-        import_id = self._post_article_to_fb(html_source)
+        import_id, acc_token = self._post_article_to_fb(html_source)
         if import_id:
             post_id.fb_import_id = import_id
+        if acc_token:
+            post_id.fb_publisher_token = acc_token
         url = '/blog/' + str(blog.id) + '/post/' + str(blog_post.id)
         return http.redirect_with_hash(url)
 
@@ -258,14 +260,25 @@ class FbInstantArticle(http.Controller):
         if len(user_id) <= 0:
             return False
 
+        blog_post_obj = request.registry['blog.post']
+        blog_post_id = blog_post_obj.search(
+            cr, SUPERUSER_ID,
+            [('fb_import_id', '=', fb_import_id)],
+            limit=1, context=context)
+        if not blog_post_id:
+            return False
+        blog_post = blog_post_obj.browse(
+            cr, SUPERUSER_ID, blog_post_id, context=context)
+
         res = request.env['website'].search(
             [('id', '=', request.website.id)],
             limit=1)
         if len(res) <= 0:
             return False
-
+        access_token = blog_post.fb_publisher_token or\
+            user_id.fb_long_term_token
         par = {
-            'access_token': user_id.fb_long_term_token,
+            'access_token': access_token,
             'fields': 'errors,instant_article,status',
         }
         fb_instant_url = 'https://graph.facebook.com/' + fb_import_id
@@ -276,15 +289,7 @@ class FbInstantArticle(http.Controller):
         response = r.json()
         if response.get('status', '') == 'SUCCESS':
             _logger.info('import succefully')
-            blog_post_obj = request.registry['blog.post']
-            blog_post_id = blog_post_obj.search(
-                cr, SUPERUSER_ID,
-                [('fb_import_id', '=', fb_import_id)],
-                limit=1, context=context)
-            if not blog_post_id:
-                return False
-            blog_post = blog_post_obj.browse(
-                cr, SUPERUSER_ID, blog_post_id, context=context)
+
             blog_post.fb_import_status_ok = True
             blog_post.fb_article_id = response.get('id', '')
             return True
