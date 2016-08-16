@@ -156,6 +156,18 @@ class FbInstantArticle(http.Controller):
                     for figure in section.iter('figure'):
                         figcaption = etree.SubElement(figure, 'figcaption')
                         figcaption.append(caption)
+        # convert image floating in s_image_floating
+        # to image with caption
+        for section in root.iter('div'):
+            if 's_image_floating' not in section.attrib.get('class', ''):
+                continue
+            for el in section.iter('div'):
+                if el.attrib.get('class', '') == 'o_footer':
+                    caption = deepcopy(el)
+                    el.getparent().remove(el)
+                    for figure in section.iter('figure'):
+                        figcaption = etree.SubElement(figure, 'figcaption')
+                        figcaption.append(caption)
         # convert gallery to slideshow
         for section in root.iter('section'):
             if 'o_gallery' not in section.attrib.get('class', ''):
