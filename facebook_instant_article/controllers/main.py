@@ -240,6 +240,7 @@ class FbInstantArticle(http.Controller):
             "facebook_instant_article.blog_post_instant_article", values)
         response.flatten()
         html_source = '<!doctype html>' + response.data
+        print html_source
         import_id = self._post_article_to_fb(html_source)
         if import_id:
             post_id.fb_import_id = import_id

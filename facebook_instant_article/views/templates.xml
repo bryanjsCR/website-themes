@@ -80,6 +80,21 @@
                             <!-- Article body goes here -->
                             <div id="blog_content" t-field="blog_post.fb_content"/>
 
+                            <!-- Google Analytics -->
+                            <figure class="op-tracker">
+                            <iframe>
+                                <script t-if="website and website.google_analytics_key">
+                                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                                    ga('create', _.str.trim('<t t-esc="website.google_analytics_key"/>'), 'auto');
+                                    ga('send','pageview');
+                                </script>
+                            </iframe>
+                        </figure>
+
                             <footer>
                                 <small>&#169; <span t-field="res_company.name" /></small>
                                 <ul class="op-related-articles">
