@@ -86,13 +86,13 @@ class FbInstantArticle(http.Controller):
             [('id', '=', request.uid)],
             limit=1)
         if len(user_id) <= 0:
-            return False
+            return False, False
 
         res = request.env['website'].search(
             [('id', '=', request.website.id)],
             limit=1)
         if len(res) <= 0:
-            return False
+            return False, False
 
         par = {
             'access_token': user_id.fb_long_term_token,
@@ -105,7 +105,7 @@ class FbInstantArticle(http.Controller):
         r = requests.Session().post(fb_instant_url, params=par)
         if not r.status_code == 200:
             _logger.warning('unable to post article')
-            return False
+            return False, False
 
         response = r.json()
         return response.get('id', ''), user_id.fb_long_term_token
@@ -170,12 +170,15 @@ class FbInstantArticle(http.Controller):
             for el in section:
                 if el is not root_figure:
                     el.getparent().remove(el)
-        # convert fb to
-        # <figure class="op-social">
-        #    <iframe>
-        #    <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3D1746588085592631%26id%3D100007243681247&width=500" width="auto" height="695" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-        #       </iframe>
-        # </figure>
+        # convert fb embed to figure+iframe
+        for element in root.iter('div'):
+            if element.attrib.get('class', '') == 'fb-post':
+                data_href = element.attrib.get('data-href', '')
+                root_figure = etree.SubElement(element, 'figure')
+                root_figure.set('class', 'op-interactive')
+                iframe_el = etree.SubElement(root_figure, 'iframe')
+                iframe_el.set('src', data_href)
+                iframe_el.set('width', 'auto')
 
         return LH.tostring(root, encoding='utf-8', method='xml')
 
@@ -240,7 +243,7 @@ class FbInstantArticle(http.Controller):
             "facebook_instant_article.blog_post_instant_article", values)
         response.flatten()
         html_source = '<!doctype html>' + response.data
-        print html_source
+        # print html_source
         import_id, acc_token = self._post_article_to_fb(html_source)
         if import_id:
             post_id.fb_import_id = import_id
