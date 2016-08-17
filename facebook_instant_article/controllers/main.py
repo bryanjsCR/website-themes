@@ -185,13 +185,18 @@ class FbInstantArticle(http.Controller):
         # convert fb embed to figure+iframe
         for element in root.iter('div'):
             if element.attrib.get('class', '') == 'fb-post':
-                data_href = element.attrib.get('data-href', '')
-                root_figure = etree.SubElement(element, 'figure')
-                root_figure.set('class', 'op-interactive')
-                iframe_el = etree.SubElement(root_figure, 'iframe')
-                iframe_el.set('src', data_href)
-                iframe_el.set('width', 'auto')
-
+                div_fb_post = deepcopy(element)
+                element.tag = 'figure'
+                for key in element.attrib.keys():
+                    element.attrib.pop(key)
+                element.set('class', 'op-interactive')
+                iframe_el = etree.SubElement(element, 'iframe')
+                iframe_el.append(div_fb_post)
+                script = etree.SubElement(iframe_el, 'script')
+                sdkurl = 'https://connect.facebook.net/uk_UA/'
+                sdkurl += 'sdk.js#xfbml=1&version=v2.7'
+                script.set('src', sdkurl)
+                script.set('async', 'true')
         return LH.tostring(root, encoding='utf-8', method='xml')
 
     @http.route(
