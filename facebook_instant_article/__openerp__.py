@@ -3,7 +3,7 @@
     'name': 'Facebook Instant Article',
     'description': 'Publish Blog Posts to Facebook as Instant Articles.',
     'category': 'Website',
-    'version': '1.1',
+    'version': '1.2',
     'price': 20.00,
     'currency': 'EUR',
     'author': "ERP Ukraine",

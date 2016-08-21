@@ -18,6 +18,14 @@ class FbConfigWebsite(models.Model):
     fb_show_ads = fields.Boolean(
         string='Show Embed Ads',
         default=True)
+    fb_development_mode = fields.Boolean(
+        string='Development Mode',
+        desription='Post articles in development mode before review',
+        default=True)
+    fb_published_articles = fields.Boolean(
+      string='Post Articles Published',
+      description='Check if You want your articles be automatically published',
+      default=False)
 
 
 class FbConfigWebsiteSettings(models.TransientModel):
@@ -35,6 +43,12 @@ class FbConfigWebsiteSettings(models.TransientModel):
     fb_show_ads = fields.Boolean(
         related='website_id.fb_show_ads',
         string='Show Embed Ads')
+    fb_development_mode = fields.Boolean(
+        related='website_id.fb_development_mode',
+        string='Development Mode')
+    fb_published_articles = fields.Boolean(
+        related='website_id.fb_published_articles',
+        string='Post Articles Published')
 
 
 class FbConfigResUsers(models.Model):

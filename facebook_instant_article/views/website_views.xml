@@ -13,6 +13,8 @@
                     <field name="fb_app_id" placeholder="792123857559330"/>
                     <field name="fb_app_secret" placeholder="792123857559330"/>
                     <field name="fb_show_ads"/>
+                    <field name="fb_development_mode"/>
+                    <field name="fb_published_articles"/>
                 </xpath>
             </data>
             </field>
@@ -47,6 +49,18 @@
                             <div name="fb_show_ads">
                                 <div class="oe_inline">
                                     <field name="fb_show_ads"/>
+                                </div>
+                            </div>
+                    <label for="fb_development_mode"/>
+                            <div name="fb_development_mode">
+                                <div class="oe_inline">
+                                    <field name="fb_development_mode"/>
+                                </div>
+                            </div>
+                    <label for="fb_published_articles"/>
+                            <div name="fb_published_articles">
+                                <div class="oe_inline">
+                                    <field name="fb_published_articles"/>
                                 </div>
                             </div>
                 </xpath>
