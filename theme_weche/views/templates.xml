@@ -423,7 +423,7 @@
 <channel>
     <title t-esc="'Weche: %s' % (blog.name)"/>
     <link t-esc="'%s' % (base_url)"/>
-    <description t-esc="blog.subtitle"/>
+    <t t-if="blog.subtitle"><description t-esc="blog.subtitle"/></t><t t-if="not blog.subtitle"><description t-esc="blog.name"/></t>
     <image>
         <url t-esc="'%s/logo.png' % (base_url)" />
         <title t-esc="blog.name"/>
