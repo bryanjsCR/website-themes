@@ -417,5 +417,30 @@
         </template>
 
 
+        <!-- RSS Feed -->
+        <template id="blog_rss">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;rss version="2.0" xmlns="http://backend.userland.com/rss2" xmlns:yandex="http://news.yandex.ru"&gt;
+<channel>
+    <title t-esc="'Weche: %s' % (blog.name)"/>
+    <link t-esc="'%s' % (base_url)"/>
+    <description t-esc="blog.subtitle"/>
+    <image>
+        <url t-esc="'%s/logo.png' % (base_url)" />
+        <title t-esc="blog.name"/>
+        <link t-esc="'%s' % (base_url)"/>
+    </image>
+    <item t-foreach="posts" t-as="post">
+        <title t-esc="post.name"/>
+        <link t-esc="'%s%s' % (base_url, post.website_url)"/>
+        <description t-esc="post.subtitle"/><t t-if="blog_post_cover_properties.get(post.id, False)">
+        <enclosure t-attf-url="#{blog_post_cover_properties.get(post.id, '')}" type="image/jpeg" /></t>
+        <pubDate t-esc="rfc_dates.get(post.id, ' ')"/>
+        &lt;yandex:full-text&gt;<t t-esc="posts_plaintext.get(post.id, ' ')"/>
+        &lt;/yandex:full-text&gt;
+    </item>
+</channel>
+&lt;/rss&gt;</template>
+
+
     </data>
 </odoo>
