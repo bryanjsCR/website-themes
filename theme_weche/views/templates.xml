@@ -149,6 +149,7 @@
                 <div class="blog_title">
                 <h1 t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id" placeholder="Blog Post Title"/>
                 <h2 t-field="blog_post.subtitle" placeholder="Subtitle"/>
+                <p t-field="blog.name" class="text-uppercase"/>
                 <p class="post-meta text-muted text-center" name="blog_post_data"/>
                 <t t-if="blog_post.blog_id.show_author">
                 <div>
