@@ -46,11 +46,13 @@ class WebsiteBlog(WebsiteBlog):
         for p in v['posts']:
             # add date in rfc-822 format
             pdate = fields.Datetime.from_string(p.write_date)
+            tz = 'Europe/Kiev'
             if p.author_id.tz:
-                localtz = timezone(p.author_id.tz)
-                pdate = localtz.localize(pdate)
-                with setlocale('C'):
-                    p_rfc_date = pdate.strftime('%a, %d %b %Y %H:%M:%S %z')
+                tz = p.author_id.tz
+            localtz = timezone(tz)
+            pdate = localtz.localize(pdate)
+            with setlocale('C'):
+                p_rfc_date = pdate.strftime('%a, %d %b %Y %H:%M:%S %z')
             v['rfc_dates'][p.id] = p_rfc_date
             # add post body as plain text
             v['posts_plaintext'][p.id] = html2plaintext(p.content)
