@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="product_template_form_view_pef" model="ir.ui.view">
+            <field name="name">product.template.common.form.pef</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/div/h1[1]" position="after">
+                    <div name="extra_fields">
+                        <div>
+                            <label for="product_marking" string="Product Marking"/>
+                            <field name="product_marking"/>
+                        </div>
+                        <div>
+                            <label for="sales_text" string="Sales Text"/>
+                            <field name="sales_text"/>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_kanban_view_pef" model="ir.ui.view">
+            <field name="name">product.template.product.kanban.pef</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//ul" position="inside">
+                    <li>Product Marking: <field name="product_marking"/></li>
+                    <li>Sales Text: <field name="sales_text"/></li>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_kanban_view_pef" model="ir.ui.view">
+            <field name="name">product.template.product.kanban.pef</field>
+            <field name="model">product.product</field>
+            <field name="priority" eval="20"/>
+            <field name="inherit_id" ref="product.product_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//ul" position="inside">
+                    <li>Product Marking: <field name="product_marking"/></li>
+                    <li>Sales Text: <field name="sales_text"/></li>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
