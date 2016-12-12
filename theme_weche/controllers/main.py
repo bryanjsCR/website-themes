@@ -47,8 +47,8 @@ class WebsiteBlog(WebsiteBlog):
             # add date in rfc-822 format
             pdate = fields.Datetime.from_string(p.write_date)
             tz = 'Europe/Kiev'
-            if p.author_id.tz:
-                tz = p.author_id.tz
+            if p.sudo().author_id.tz:
+                tz = p.sudo().author_id.tz
             localtz = timezone(tz)
             pdate = localtz.localize(pdate)
             with setlocale('C'):
