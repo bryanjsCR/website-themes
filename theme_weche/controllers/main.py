@@ -33,7 +33,7 @@ class WebsiteBlog(WebsiteBlog):
 
     @http.route(['/blog/<model("blog.blog"):blog>/rss'],
                 type='http', auth="public")
-    def blog_rss(self, blog, limit='15'):
+    def blog_rss(self, blog, limit='10'):
         v = {}
         v['blog'] = blog
         v['base_url'] = request.env[
