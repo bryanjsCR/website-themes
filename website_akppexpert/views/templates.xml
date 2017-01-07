@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <template id="categ_html_akpp" inherit_id="website_sale.products">
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+                <t t-if="category and category.html_content">
+                    <div id="cat_html_content" t-field="category.html_content"/>
+                </t>
+            </xpath>
+        </template>
+        <template id="hide_addtocart_akpp" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="attributes">
+                <attribute name="t-if">product and product.qty_available &gt; 0</attribute>
+            </xpath>
+        </template>
+        <template id="show_warn_akpp" inherit_id="website_sale.product">
+            <xpath expr="//a[@id='add_to_cart']" position="after">
+                 <p t-if="product and product.qty_available &lt;= 0" class="bg-danger" style="padding: 15px;">Product not available</p>
+            </xpath>
+        </template>
+        <template id="hide_prodquant_akpp" inherit_id="website_sale.product_quantity">
+            <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
+                <attribute name="t-if">product and product.qty_available &gt; 0</attribute>
+            </xpath>
+        </template>
+        <template id="products_msg_out_of_stock"
+            inherit_id="website_sale.products_item"
+            customize_show="True" name="Show Out of Stock">
+            <xpath expr="//span[@itemprop='priceCurrency']" position="after">
+                    <span t-if="product and product.qty_available &lt;= 0"
+                        class="text-danger"><strong>Out of Stock</strong></span>
+            </xpath>
+        </template>
+        <template id="products_ref"
+            inherit_id="website_sale.products_item"
+            customize_show="True" name="Product Reference">
+            <xpath expr="//div[@class='product_price']" position="before">
+                <div class="text-info oe_subdescription" contenteditable="false">
+                    <span itemprop="default_code" t-field="product.default_code"/>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
