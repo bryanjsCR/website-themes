@@ -8,6 +8,8 @@
     'author': "ERP Ukraine",
     'website': "https://erp.co.ua",
     'license': 'AGPL-3',
+    'price': 20.00,
+    'currency': 'EUR',
     'category': 'Discuss',
     'version': '1.0',
     'depends': ['mail'],
