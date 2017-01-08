@@ -32,6 +32,10 @@ function add_link (node, transform_children) {
     node.innerHTML = transform_children();
     return node.outerHTML;
 }
+function add_channel_to_message (message, channel_id) {
+    message.channel_ids.push(channel_id);
+    message.channel_ids = _.uniq(message.channel_ids);
+}
 var emoji_substitutions = {};
 var emojis = [];
 
