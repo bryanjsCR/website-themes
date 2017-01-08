@@ -1,0 +1,36 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* website_akppexpert
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-08 11:00+0000\n"
+"PO-Revision-Date: 2017-01-08 11:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: website_akppexpert
+#: model:ir.ui.view,arch_db:website_akppexpert.products_msg_out_of_stock
+msgid "<strong>Out of Stock</strong>"
+msgstr "<strong>Нет в наличии</strong>"
+
+#. module: website_akppexpert
+#: model:ir.model.fields,field_description:website_akppexpert.field_product_public_category_html_content
+msgid "HTML Content"
+msgstr "Описание на сайте"
+
+#. module: website_akppexpert
+#: model:ir.ui.view,arch_db:website_akppexpert.show_warn_akpp
+msgid "Product not available"
+msgstr "Товара нет на складе"
+
+#. module: website_akppexpert
+#: model:ir.model,name:website_akppexpert.model_product_public_category
+msgid "Website Product Category"
+msgstr "Категория товара на сайте"

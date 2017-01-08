@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "website_akppexpert",
+    'name': "Akppexpert Customizations",
     'description': """
         Website customization for AkppExpert
     """,
