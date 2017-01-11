@@ -14,24 +14,24 @@
         </template>
         <template id="hide_addtocart_akpp" inherit_id="website_sale.product">
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
-                <attribute name="t-if">product and product.qty_available &gt; 0</attribute>
+                <attribute name="t-if">product and product.sudo().qty_available &gt; 0</attribute>
             </xpath>
         </template>
         <template id="show_warn_akpp" inherit_id="website_sale.product">
             <xpath expr="//a[@id='add_to_cart']" position="after">
-                 <p t-if="product and product.qty_available &lt;= 0" class="bg-danger" style="padding: 15px;">Product not available</p>
+                 <p t-if="product and product.sudo().qty_available &lt;= 0" class="bg-danger" style="padding: 15px;">Product not available</p>
             </xpath>
         </template>
         <template id="hide_prodquant_akpp" inherit_id="website_sale.product_quantity">
             <xpath expr="//div[@class='css_quantity input-group oe_website_spinner']" position="attributes">
-                <attribute name="t-if">product and product.qty_available &gt; 0</attribute>
+                <attribute name="t-if">product and product.sudo().qty_available &gt; 0</attribute>
             </xpath>
         </template>
         <template id="products_msg_out_of_stock"
             inherit_id="website_sale.products_item"
             customize_show="True" name="Show Out of Stock">
             <xpath expr="//span[@itemprop='priceCurrency']" position="after">
-                    <span t-if="product and product.qty_available &lt;= 0"
+                    <span t-if="product and product.sudo().qty_available &lt;= 0"
                         class="text-danger"><strong>Out of Stock</strong></span>
             </xpath>
         </template>
