@@ -8,4 +8,11 @@ class ProductPublicCatgoryAKPP(models.Model):
 
     html_content = fields.Html(
         'HTML Content',
-        default='<div class="oe_structure" />')
+        default='<div class="oe_structure" />',
+        translate=True)
+
+
+class ProductAttributeValutAKPP(models.Model):
+    _inherit = 'product.attribute.value'
+
+    website_active = fields.Boolean('Active', default=True)

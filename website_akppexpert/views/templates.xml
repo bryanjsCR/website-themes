@@ -12,6 +12,25 @@
                 </t>
             </xpath>
         </template>
+        <template id="hide_attribute_akpp" inherit_id="website_sale.variants">
+            <xpath expr="//option" position="attributes">
+                <attribute name="t-if">value_id.website_active</attribute>
+            </xpath>
+            <xpath expr="//li[@class='form-group js_attribute_value']" position="attributes">
+                <attribute name="t-if">value_id.website_active</attribute>
+            </xpath>
+            <xpath expr="//label[@t-attf-style='background-color:#{value_id.color or value_id.name}']" position="attributes">
+                <attribute name="t-if">value_id.website_active</attribute>
+            </xpath>
+            <xpath expr="//ul/t/li/t" position="attributes">
+                <attribute name="t-if">variant_id.attribute_id.type == 'select'</attribute>
+            </xpath>
+        </template>
+        <template id="show_code_on_prod_akpp" inherit_id="website_sale.product">
+            <xpath expr="//h1" position="after">
+                <span t-if="product.default_code">Code: <span itemprop="default_code" t-field="product.default_code"/></span>
+            </xpath>
+        </template>
         <template id="hide_addtocart_akpp" inherit_id="website_sale.product">
             <xpath expr="//a[@id='add_to_cart']" position="attributes">
                 <attribute name="t-if">product and product.sudo().qty_available &gt; 0</attribute>

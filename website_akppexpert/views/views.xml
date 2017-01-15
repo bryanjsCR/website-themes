@@ -10,5 +10,15 @@
                 </xpath>
             </field>
         </record>
+        <record id="product_attribute_value_view_tree_akpp" model="ir.ui.view">
+            <field name="name">product.attribute.value.view.tree.akpp</field>
+           <field name="model">product.attribute.value</field>
+            <field name="inherit_id" ref="product.product_attribute_value_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="website_active"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
