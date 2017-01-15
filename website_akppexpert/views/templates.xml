@@ -28,7 +28,7 @@
         </template>
         <template id="show_code_on_prod_akpp" inherit_id="website_sale.product">
             <xpath expr="//h1" position="after">
-                <span t-if="product.default_code">Code: <span itemprop="default_code" t-field="product.default_code"/></span>
+                <span t-if="product.default_code">[<span itemprop="default_code" t-field="product.default_code"/>]</span>
             </xpath>
         </template>
         <template id="hide_addtocart_akpp" inherit_id="website_sale.product">
