@@ -26,6 +26,11 @@
                 <attribute name="t-if">variant_id.attribute_id.type == 'select'</attribute>
             </xpath>
         </template>
+        <template id="product_attributes_akpp" inherit_id="website_sale.product_attributes">
+            <xpath expr="//t[@t-if='len(variant_id.value_ids)==1']" position="attributes">
+                <attribute name="t-if">len(variant_id.value_ids)==1 and variant_id.attribute_id.type != 'hidden'</attribute>
+            </xpath>
+        </template>
         <template id="show_code_on_prod_akpp" inherit_id="website_sale.product">
             <xpath expr="//h1" position="after">
                 <span t-if="product.default_code">[<span itemprop="default_code" t-field="product.default_code"/>]</span>
